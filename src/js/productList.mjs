@@ -22,7 +22,7 @@ export default async function productList(selector, category) {
   // console.log(products);
   // render out the product list to the element
   const excludedProductIds = ["880RT", "989CG"];
-
   const displayProducts = products.filter((product) => !excludedProductIds.includes(product.Id));
+  // console.log(displayProducts);
   renderListWithTemplate(productCardTemplate, el, displayProducts);
 }
