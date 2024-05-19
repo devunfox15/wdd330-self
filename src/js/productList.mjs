@@ -21,5 +21,8 @@ export default async function productList(selector, category) {
   const products = await getData(category);
   // console.log(products);
   // render out the product list to the element
-  renderListWithTemplate(productCardTemplate, el, products);
+  const excludedProductIds = ["880RT", "989CG"];
+
+  const displayProducts = products.filter((product) => !excludedProductIds.includes(product.Id));
+  renderListWithTemplate(productCardTemplate, el, displayProducts);
 }
