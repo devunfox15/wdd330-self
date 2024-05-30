@@ -1,29 +1,39 @@
 import { findProductById } from "./productData.mjs";
-import { setLocalStorage } from "./utils.mjs";
+import { setLocalStorage, loadHeaderFooter } from "./utils.mjs";
 
-let product = {};
+let currentProduct = {};
 
-export default async function productDetails(productId) {
-  // get the details for the current product. findProductById will return a promise! use await or .then() to process it
-  product = await findProductById(productId);
-  // once we have the product details we can render out the HTML
-  renderProductDetails();
-  // once the HTML is rendered we can add a listener to Add to Cart button
-  document.getElementById("addToCart").addEventListener("click", addToCart);
-}
-function addToCart() {
-  setLocalStorage("so-cart", product);
-}
+loadHeaderFooter("../partials/productHeader.html", "../partials/footer.html");
+
 function renderProductDetails() {
-  document.querySelector("#productName").innerText = product.Brand.Name;
-  document.querySelector("#productNameWithoutBrand").innerText =
-    product.NameWithoutBrand;
-  document.querySelector("#productImage").src = product.Image;
-  document.querySelector("#productImage").alt = product.Name;
-  document.querySelector("#productFinalPrice").innerText = product.FinalPrice;
-  document.querySelector("#productColorName").innerText =
-    product.Colors[0].ColorName;
-  document.querySelector("#productDescriptionHtmlSimple").innerHTML =
-    product.DescriptionHtmlSimple;
-  document.querySelector("#addToCart").dataset.id = product.Id;
+  // Render product details in HTML
+  const productContainer = document.getElementById("product-details");
+
+  // Example rendering of product details
+  productContainer.innerHTML = `
+    <div>
+      <h2>${currentProduct.name}</h2>
+      <p>${currentProduct.description}</p>
+      <p>Price: $${currentProduct.price}</p>
+      <button id="addToCart" data-id="${currentProduct.id}">Add to Cart</button>
+    </div>
+  `;
 }
+
+async function productDetails(productId) {
+  // Find product by id
+  currentProduct = await findProductById(productId);
+  if (currentProduct) {
+    renderProductDetails();
+  } else {
+    console.error("Product not found.");
+  }
+}
+
+function addToCart() {
+  // Function to add product to cart
+  setLocalStorage("so-cart", currentProduct);
+}
+
+export default productDetails;
+export { addToCart };
