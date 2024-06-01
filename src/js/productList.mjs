@@ -23,6 +23,7 @@ async function productList(selector, category) {
     const newProducts = products.filter(item => item.Id !== "989CG" && item.Id !== "880RT") 
     // render out the product list to the element
     renderListWithTemplate(productCardTemplate, elem, newProducts);
+    document.querySelector(".title").innerHTML = category;
     
 }
 

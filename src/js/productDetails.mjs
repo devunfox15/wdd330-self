@@ -1,39 +1,45 @@
 import { findProductById } from "./productData.mjs";
-import { setLocalStorage, loadHeaderFooter } from "./utils.mjs";
+import { getLocalStorage,setLocalStorage, loadHeaderFooter } from "./utils.mjs";
 
 let currentProduct = {};
 
 loadHeaderFooter("../partials/productHeader.html", "../partials/footer.html");
 
 function renderProductDetails() {
-  // Render product details in HTML
-  const productContainer = document.getElementById("product-details");
-
-  // Example rendering of product details
-  productContainer.innerHTML = `
-    <div>
-      <h2>${currentProduct.name}</h2>
-      <p>${currentProduct.description}</p>
-      <p>Price: $${currentProduct.price}</p>
-      <button id="addToCart" data-id="${currentProduct.id}">Add to Cart</button>
-    </div>
-  `;
+  // changed this function to use more query selectors for muiltiple pages
+  document.querySelector("#productName").innerText = currentProduct.Brand.Name;
+  document.querySelector("#productNameWithoutBrand").innerText =
+  currentProduct.NameWithoutBrand;
+  document.querySelector("#productImage").src = currentProduct.Images.PrimaryLarge;
+  document.querySelector("#productImage").alt = currentProduct.Name;
+  document.querySelector("#productFinalPrice").innerText = currentProduct.FinalPrice;
+  document.querySelector("#productColorName").innerText =
+  currentProduct.Colors[0].ColorName;
+  document.querySelector("#productDescriptionHtmlSimple").innerHTML =
+  currentProduct.DescriptionHtmlSimple;
+  document.querySelector("#addToCart").dataset.id = currentProduct.Id;
 }
 
-async function productDetails(productId) {
+
+export default async function productDetails(productId) {
   // Find product by id
   currentProduct = await findProductById(productId);
-  if (currentProduct) {
-    renderProductDetails();
-  } else {
-    console.error("Product not found.");
-  }
+
+  renderProductDetails();
+  
+  document.getElementById("addToCart").addEventListener("click", addToCart);
+  
 }
 
 function addToCart() {
-  // Function to add product to cart
-  setLocalStorage("so-cart", currentProduct);
+  let cartContents = getLocalStorage("so-cart");
+
+  if (!cartContents) {
+    cartContents = [];
+  }
+  cartContents.push(currentProduct);
+  setLocalStorage("so-cart", cartContents);
 }
 
-export default productDetails;
-export { addToCart };
+
+
